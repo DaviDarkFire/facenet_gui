@@ -1,4 +1,3 @@
- gadu.jpeg   Santana: 0.707
- maria.jpeg   Santana: 0.499
- gaduuu.jpg   Santana: 0.476
-Accuracy: 0.000
+ 2.jpeg   Davi: 0.340
+ 1.jpeg   Santana: 0.343
+Accuracy: 0.500

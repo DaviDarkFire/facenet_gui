@@ -2,11 +2,28 @@
 from fltk import *
 from PIL import Image
 from distutils.dir_util import copy_tree
+import shutil
 import glob
 import os
 
 global caixa
 global path
+global video_extensions
+video_extensions = ["ebm","mkv","flv","vob","gif","avi","mov","wmv","mp4","m4p","m4v","peg","mpg","3gp"]
+
+def is_video_file(file):
+    return file[-3:] in video_extensions
+
+
+def extract_keyframes(path):
+    for subdir, dirs, files in os.walk(path):
+        subsubdir = subdir.split("/")[-1]
+        for filename in files:
+            file = path+"/"+subsubdir+"/"+filename
+            if(is_video_file(file)):
+                os.system("ffmpeg -i "+file+" -vf 'select=eq(pict_type\,I)' -vsync vfr "+file[:-4]+"_%04d.jpg -hide_banner")
+
+
 
 def convert_jpeg(path): #convert image files to jpg
     for subdir, dirs, files in os.walk(path):
@@ -30,7 +47,6 @@ def classificar(path):
 def handle_folder():
     global path
     file_browser = Fl_File_Chooser(".", "*", Fl_File_Chooser.DIRECTORY, "Selecione a pasta com imagens e/ou vídeos")
-    #file_browser = Fl_File_Chooser(".", "*", Fl_File_Chooser.DIRECTORY, "Selecione o arquivo de video")
     file_browser_label = Fl_Box(16,4,25,5, "Pasta")
     file_browser.show()
 
@@ -41,6 +57,7 @@ def handle_folder():
         return
     
     path = file_browser.value()
+    extract_keyframes(path)
     text = ""
     for filename in os.listdir(path):
         text = text+filename+"\n"
